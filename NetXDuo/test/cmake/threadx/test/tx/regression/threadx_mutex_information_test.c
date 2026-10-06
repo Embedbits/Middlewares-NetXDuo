@@ -50,14 +50,14 @@ CHAR    *pointer;
     /* Put system definition stuff in here, e.g. thread creates and other assorted
        create information.  */
 
-    status =  tx_thread_create(&thread_0, "thread 0", thread_0_entry, 1,  
-            pointer, TEST_STACK_SIZE_PRINTF, 
+    status =  tx_thread_create(&thread_0, "thread 0", thread_0_entry, 1,
+            pointer, TEST_STACK_SIZE_PRINTF,
             16, 16, TX_NO_TIME_SLICE, TX_AUTO_START);
     pointer = pointer + TEST_STACK_SIZE_PRINTF;
 
 
-    status =  tx_thread_create(&thread_1, "thread 1", thread_1_entry, 1,  
-            pointer, TEST_STACK_SIZE_PRINTF, 
+    status =  tx_thread_create(&thread_1, "thread 1", thread_1_entry, 1,
+            pointer, TEST_STACK_SIZE_PRINTF,
             16, 16, TX_NO_TIME_SLICE, TX_AUTO_START);
     pointer = pointer + TEST_STACK_SIZE_PRINTF;
 
@@ -196,7 +196,7 @@ ULONG       inheritances;
 
     /* Attempt to get the mutex.  Should be unsuccessful.  */
     status =  tx_mutex_get(&mutex_1, TX_NO_WAIT);
-    
+
     /* Check status.  */
     if (status != TX_NOT_AVAILABLE)
     {
@@ -222,7 +222,7 @@ ULONG       inheritances;
     }
 
     status =  tx_mutex_delete(&mutex_1);
-    
+
     /* Check status.  */
     if (status != TX_SUCCESS)
     {
@@ -289,7 +289,7 @@ ULONG       inheritances;
     status += tx_mutex_info_get(&mutex_2, &name, &count, &owner, &first_suspended, &suspended_count, &next_mutex);
 
     /* Check status.  */
-    if ((status != TX_SUCCESS) || (count != mutex_2.tx_mutex_ownership_count) || (owner != mutex_2.tx_mutex_owner) || 
+    if ((status != TX_SUCCESS) || (count != mutex_2.tx_mutex_ownership_count) || (owner != mutex_2.tx_mutex_owner) ||
         (first_suspended != mutex_2.tx_mutex_suspension_list) || (suspended_count != mutex_2.tx_mutex_suspended_count) || (next_mutex != mutex_2.tx_mutex_created_next))
     {
 
@@ -312,9 +312,9 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(&mutex_2, &puts, &gets, &suspensions, &timeouts, &inversions, &inheritances);
-    
+
     /* Check status.  */
     if ((status != TX_SUCCESS) || (puts != mutex_2.tx_mutex_performance_put_count) || (gets != mutex_2.tx_mutex_performance_get_count) ||
         (suspensions != mutex_2.tx_mutex_performance_suspension_count) || (timeouts != mutex_2.tx_mutex_performance_timeout_count) ||
@@ -326,9 +326,9 @@ ULONG       inheritances;
         test_control_return(1);
     }
     
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(&puts, &gets, &suspensions, &timeouts, &inversions, &inheritances);
-    
+
     /* Check status.  */
     if ((status != TX_SUCCESS) || (puts != _tx_mutex_performance_put_count) || (gets != _tx_mutex_performance_get_count) ||
         (suspensions != _tx_mutex_performance_suspension_count) || (timeouts != _tx_mutex_performance_timeout_count) ||
@@ -342,7 +342,7 @@ ULONG       inheritances;
 
 #else
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(&mutex_2, &puts, &gets, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -354,7 +354,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, &puts, &gets, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -366,7 +366,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, &gets, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -378,7 +378,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, TX_NULL, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -390,7 +390,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -402,7 +402,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, &inversions, &inheritances);
 
     /* Check status.  */
@@ -414,7 +414,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, &inheritances);
 
     /* Check status.  */
@@ -426,7 +426,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the performance inforamtion.  */
+    /* Now get the performance information.  */
     status =  tx_mutex_performance_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL);
 
     /* Check status.  */
@@ -438,7 +438,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(&puts, &gets, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -450,7 +450,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, &gets, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -462,7 +462,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, TX_NULL, &suspensions, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -474,7 +474,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, TX_NULL, TX_NULL, &timeouts, &inversions, &inheritances);
 
     /* Check status.  */
@@ -486,7 +486,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, &inversions, &inheritances);
 
     /* Check status.  */
@@ -498,7 +498,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, &inheritances);
 
     /* Check status.  */
@@ -510,7 +510,7 @@ ULONG       inheritances;
         test_control_return(1);
     }
 
-    /* Now get the system performance inforamtion.  */
+    /* Now get the system performance information.  */
     status =  tx_mutex_performance_system_info_get(TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL, TX_NULL);
 
     /* Check status.  */
@@ -537,7 +537,7 @@ ULONG       inheritances;
     }
 
     status =  tx_mutex_delete(&mutex_3);
-    
+
     /* Check status.  */
     if (status != TX_SUCCESS)
     {

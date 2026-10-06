@@ -1,10 +1,11 @@
 /***************************************************************************
- * Copyright (c) 2024 Microsoft Corporation 
- * 
+ * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
+ *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
  * https://opensource.org/licenses/MIT.
- * 
+ *
  * SPDX-License-Identifier: MIT
  **************************************************************************/
 
@@ -105,25 +106,6 @@ ULONG _fx_media_format_volume_id =  1;
 /*                                                                        */
 /*    Application Code                                                    */
 /*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     William E. Lamie         Initial Version 6.0           */
-/*  09-30-2020     William E. Lamie         Modified comment(s), and      */
-/*                                            added conditional to        */
-/*                                            disable force memset,       */
-/*                                            resulting in version 6.1    */
-/*  03-02-2021     William E. Lamie         Modified comment(s),          */
-/*                                            resulting in version 6.1.5  */
-/*  08-02-2021     Bhupendra Naphade        Modified comment(s), and      */
-/*                                            updated boot write logic,   */
-/*                                            resulting in version 6.1.8  */
-/*  04-25-2022     Bhupendra Naphade        Modified comment(s), and      */
-/*                                            updated reserved FAT entry  */
-/*                                            value,                      */
-/*                                            resulting in version 6.1.11 */
-/*                                                                        */
 /**************************************************************************/
 UINT  _fx_media_format(FX_MEDIA *media_ptr, VOID (*driver)(FX_MEDIA *media), VOID *driver_info_ptr, UCHAR *memory_ptr, UINT memory_size,
                        CHAR *volume_name, UINT number_of_fats, UINT directory_entries, UINT hidden_sectors,
@@ -161,9 +143,11 @@ UINT   sectors_per_fat, f, s;
     media_ptr -> fx_media_hidden_sectors =              hidden_sectors;
 
     /* Initialize the supplied media I/O driver.  First, build the
-       initialize driver request.  */
+       initialize driver request. Set the fx_media_driver_status to FX_MEDIA_INVALID
+       to let the driver know that the request is issued from a fx_media_format() call
+     */
     media_ptr -> fx_media_driver_request =              FX_DRIVER_INIT;
-    media_ptr -> fx_media_driver_status =               FX_IO_ERROR;
+    media_ptr -> fx_media_driver_status =               FX_MEDIA_INVALID;
     media_ptr -> fx_media_driver_info =                 driver_info_ptr;
     media_ptr -> fx_media_driver_write_protect =        FX_FALSE;
     media_ptr -> fx_media_driver_free_sector_update =   FX_FALSE;
@@ -443,17 +427,24 @@ UINT   sectors_per_fat, f, s;
     _fx_utility_memory_set(&byte_ptr[j + i], ' ', (11 - i));
 #endif /* FX_DISABLE_FORCE_MEMORY_OPERATION */
 
-
+/* Set bootrecord signature. */
 #ifdef FX_FORCE_512_BYTE_BOOT_SECTOR
-
-    /* Set bootrecord signature.  */
-    byte_ptr[510] = 0x55;
-    byte_ptr[511] = 0xAA;
+    /* Put the boot signature in the standard position. */
+    byte_ptr[FX_SIG_OFFSET] = FX_SIG_BYTE_1;
+    byte_ptr[FX_SIG_OFFSET + 1] = FX_SIG_BYTE_2;
 #else
-
-    /* Set bootrecord signature.  */
-    byte_ptr[bytes_per_sector - 2] = 0x55;
-    byte_ptr[bytes_per_sector - 1] = 0xAA;
+    if (bytes_per_sector < 512)
+    {
+        /*  Put the boot signature at the end of the sector. */
+        byte_ptr[bytes_per_sector - 2] = FX_SIG_BYTE_1;
+        byte_ptr[bytes_per_sector - 1] = FX_SIG_BYTE_2;
+    }
+    else
+    {
+        /* Put the boot signature in the standard position. */
+        byte_ptr[FX_SIG_OFFSET] = FX_SIG_BYTE_1;
+        byte_ptr[FX_SIG_OFFSET + 1] = FX_SIG_BYTE_2;
+    }
 #endif
 
     /* Select the boot record write command.  */
@@ -510,8 +501,8 @@ UINT   sectors_per_fat, f, s;
         byte_ptr[487] =  0x61;
 
         /* Build the final signature word, this too is used to help verify that this is a FSINFO sector.  */
-        byte_ptr[508] =  0x55;
-        byte_ptr[509] =  0xAA;
+        byte_ptr[FX_SIG_OFFSET] = FX_SIG_BYTE_1;
+        byte_ptr[FX_SIG_OFFSET + 1] = FX_SIG_BYTE_2;
 
         /* Setup the total available clusters on the media. We need to subtract 1 for the FAT32 root directory.  */
         _fx_utility_32_unsigned_write(&byte_ptr[488], (total_clusters - 1));
@@ -677,6 +668,22 @@ UINT   sectors_per_fat, f, s;
             return(FX_IO_ERROR);
         }
     }
+
+#ifndef FX_MEDIA_STATISTICS_DISABLE
+
+    /* Increment the number of driver flush requests.  */
+    media_ptr -> fx_media_driver_flush_requests++;
+#endif
+
+    /* Build the "flush" I/O driver request.  */
+    media_ptr -> fx_media_driver_request =      FX_DRIVER_FLUSH;
+    media_ptr -> fx_media_driver_status =       FX_IO_ERROR;
+
+    /* If trace is enabled, insert this event into the trace buffer.  */
+    FX_TRACE_IN_LINE_INSERT(FX_TRACE_INTERNAL_IO_DRIVER_FLUSH, media_ptr, 0, 0, 0, FX_TRACE_INTERNAL_EVENTS, 0, 0)
+
+    /* Call the specified I/O driver with the flush request.  */
+    (driver)(media_ptr);
 
     /* Build the "uninitialize" I/O driver request.  */
     media_ptr -> fx_media_driver_request =      FX_DRIVER_UNINIT;
