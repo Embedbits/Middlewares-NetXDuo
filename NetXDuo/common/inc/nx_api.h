@@ -26,7 +26,7 @@
 /*  APPLICATION INTERFACE DEFINITION                       RELEASE        */
 /*                                                                        */
 /*    nx_api.h                                            PORTABLE C      */
-/*                                                           6.2.1        */
+/*                                                           6.3.0        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Yuxin Zhou, Microsoft Corporation                                   */
@@ -100,6 +100,9 @@
 /*  03-08-2023     Tiejun Zhou              Modified comment(s), and      */
 /*                                            updated product constants,  */
 /*                                            resulting in version 6.2.1  */
+/*  10-31-2023     Tiejun Zhou              Modified comment(s),          */
+/*                                            supported random IP id,     */
+/*                                            resulting in version 6.3.0  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -515,8 +518,8 @@ VOID _nx_trace_event_update(TX_TRACE_BUFFER_ENTRY *event, ULONG timestamp, ULONG
 /* Define basic constants for the NetX TCP/IP Stack.  */
 #define AZURE_RTOS_NETXDUO
 #define NETXDUO_MAJOR_VERSION                    6
-#define NETXDUO_MINOR_VERSION                    2
-#define NETXDUO_PATCH_VERSION                    1
+#define NETXDUO_MINOR_VERSION                    3
+#define NETXDUO_PATCH_VERSION                    0
 
 /* Define the following symbols for backward compatibility */
 #define EL_PRODUCT_NETXDUO
@@ -2582,8 +2585,10 @@ typedef struct NX_IP_STRUCT
 #endif
 #endif /* !NX_DISABLE_IPV4  */
 
+#ifndef NX_ENABLE_IP_ID_RANDOMIZATION
     /* Define the packet ID.  */
     ULONG       nx_ip_packet_id;
+#endif /* NX_ENABLE_IP_ID_RANDOMIZATION */
 
     /* Define the default packet pool.  */
     struct NX_PACKET_POOL_STRUCT

@@ -12,14 +12,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "nx_azure_iot.h"
+#include "azure/core/internal/az_log_internal.h"
 
 #ifndef NX_AZURE_DISABLE_IOT_SECURITY_MODULE
 #include "nx_azure_iot_security_module.h"
 #endif /* NX_AZURE_DISABLE_IOT_SECURITY_MODULE */
-
-#include "nx_azure_iot.h"
-
-#include "azure/core/internal/az_log_internal.h"
 
 #ifndef NX_AZURE_IOT_WAIT_OPTION
 #define NX_AZURE_IOT_WAIT_OPTION NX_WAIT_FOREVER
@@ -34,6 +32,7 @@ NX_AZURE_IOT *_nx_azure_iot_created_ptr;
 /* Define the callback for logging.  */
 static VOID(*_nx_azure_iot_log_callback)(az_log_classification classification, UCHAR *msg, UINT msg_len);
 
+extern UINT _nxd_mqtt_client_packet_allocate(NXD_MQTT_CLIENT *client_ptr, NX_PACKET **packet_ptr, ULONG wait_option);
 extern UINT _nxd_mqtt_client_publish_packet_send(NXD_MQTT_CLIENT *client_ptr, NX_PACKET *packet_ptr,
                                                  USHORT packet_id, UINT QoS, ULONG wait_option);
 
@@ -362,9 +361,9 @@ UINT nx_azure_iot_publish_packet_get(NX_AZURE_IOT *nx_azure_iot_ptr, NXD_MQTT_CL
 {
 UINT status;
 
-    status = nx_secure_tls_packet_allocate(&(client_ptr -> nxd_mqtt_tls_session),
-                                           nx_azure_iot_ptr -> nx_azure_iot_pool_ptr,
-                                           packet_pptr, wait_option);
+    NX_PARAMETER_NOT_USED(nx_azure_iot_ptr);
+
+    status = _nxd_mqtt_client_packet_allocate(client_ptr, packet_pptr, wait_option);
     if (status)
     {
         LogError(LogLiteralArgs("Create publish packet failed"));
