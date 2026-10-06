@@ -1,5 +1,47 @@
 # Release History
 
+## 1.1.0 (2021-03-09)
+
+### Breaking Changes
+
+- Compared to the previous 1.0.0 release, there are **no** breaking changes.
+- Removed `az_iot_pnp_client.h`, which included some beta APIs related to IoT Plug and Play such as `az_iot_pnp_client()`.
+  - These will ship in a future release and will continue to be available as beta from [this feature branch](https://github.com/Azure/azure-sdk-for-c/tree/feature/iot_pnp).
+  
+### Bug Fixes
+
+- [[#1600]](https://github.com/Azure/azure-sdk-for-c/pull/1600) Make sure `az_json_writer_append_json_text()` appends a comma between elements of a JSON array.
+- [[#1580]](https://github.com/Azure/azure-sdk-for-c/pull/1580) Fix build on Ubuntu 18.04 by updating CMake policy and MSVC runtime libraries.
+
+## 1.1.0-beta.2 (2020-11-11)
+
+### Bug Fixes
+
+- [[#1472]](https://github.com/Azure/azure-sdk-for-c/pull/1472) Fix `az_iot_message_properties_next()` when the buffer in which the properties were kept was bigger than the length of characters in the buffer.
+
+### Other Changes and Improvements
+
+- [[#1473]](https://github.com/Azure/azure-sdk-for-c/pull/1473) Add remote server certificate validation on paho and ESP8266 samples.
+- [[#1449]](https://github.com/Azure/azure-sdk-for-c/pull/1449) Add basic reconnection capability for the ESP8266 sample.
+- [[#1490]](https://github.com/Azure/azure-sdk-for-c/pull/1490) Fix static analyzer flagging of non-checked return value in `az_iot_hub_client_c2d_parse_received_topic()`.
+
+## 1.1.0-beta.1 (2020-10-06)
+
+### New Features
+
+- Added an `az_log_classification_filter_fn` callback function type along with a setter `az_log_set_classification_filter_callback()`, allowing the caller to filter log messages.
+
+### Bug Fixes
+
+- Fix bounds check while processing incomplete JSON string containing escaped characters to avoid out-of-range access.
+- Fix Windows to use /MT when building the CRT and static libraries.
+- Fail gracefully on invalid/incomplete HTTP response processing by avoiding reading from size 0 span.
+
+### Other Changes and Improvements
+
+- Add precondition check to validate clients are initialized before passed in to public APIs.
+- Add high-level and simplified az_core.h and az_iot.h files for simpler include experience for customers.
+
 ## 1.0.0 (2020-09-21)
 
 ### Breaking Changes
