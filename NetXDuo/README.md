@@ -1,10 +1,10 @@
-# Azure RTOS NetxDuo
+# Azure RTOS NetX Duo
 
 This advanced, industrial-grade TCP/IP network stack is designed specifically for deeply embedded real-time and IoT applications. Azure RTOS NetX Duo is a dual IPv4 and IPv6 network stack, while Azure RTOS NetX is the original IPv4 network stack, essentially a subset of Azure RTOS NetX Duo.
 
 ## Documentation
 
-Documentation for this library can be found here: http://docs.microsoft.com/azure/rtos/netxduo
+Documentation for this library can be found here: http://docs.microsoft.com/azure/rtos/netx-duo
 
 # Understanding inter-component dependencies
 
