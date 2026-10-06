@@ -14,7 +14,6 @@ set(SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/ftp/nxd_ftp_server.c
 	${CMAKE_CURRENT_LIST_DIR}/http/nxd_http_client.c
 	${CMAKE_CURRENT_LIST_DIR}/http/nxd_http_server.c
-	${CMAKE_CURRENT_LIST_DIR}/lwm2m/nx_lwm2m_client.c
 	${CMAKE_CURRENT_LIST_DIR}/mdns/nxd_mdns.c
 	${CMAKE_CURRENT_LIST_DIR}/mqtt/nxd_mqtt_client.c
 	${CMAKE_CURRENT_LIST_DIR}/nat/nx_nat.c
@@ -62,13 +61,7 @@ if(NXD_ENABLE_AZURE_IOT)
          ${CMAKE_CURRENT_LIST_DIR}/azure_iot/nx_azure_iot_adu_root_key.c
     )
     set(ENV{AZ_SDK_C_NO_SAMPLES} TRUE)
-    set(NX_AZURE_DISABLE_IOT_SECURITY_MODULE OFF CACHE BOOL "Disable Azure IoT Security Module (default is OFF)")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/azure_iot/azure-sdk-for-c)
-    if(NX_AZURE_DISABLE_IOT_SECURITY_MODULE)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC -DNX_AZURE_DISABLE_IOT_SECURITY_MODULE)
-    else()
-        add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/azure_iot/azure_iot_security_module)
-    endif()
 endif()
 
 # Remove the file server files if the user doesn't want them
@@ -92,7 +85,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/dns
     ${CMAKE_CURRENT_LIST_DIR}/ftp
     ${CMAKE_CURRENT_LIST_DIR}/http
-    ${CMAKE_CURRENT_LIST_DIR}/lwm2m
     ${CMAKE_CURRENT_LIST_DIR}/mdns
     ${CMAKE_CURRENT_LIST_DIR}/mqtt
     ${CMAKE_CURRENT_LIST_DIR}/nat
